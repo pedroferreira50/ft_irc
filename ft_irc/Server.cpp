@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include "commands/commands.hpp"
+#include "Channel.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -21,6 +22,8 @@ Server::~Server()
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		delete it->second;
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		delete (it->second);
 	close(_fd);
 }
 
@@ -336,3 +339,30 @@ const std::string& Server::getServerName() const
 {
 	return _serverName;
 }
+
+Channel*	Server::getChannel(const std::string& name) const
+{
+	std::map<std::string, Channel*>::const_iterator it = _channels.find(Channel::toLower(name));
+	if (it == _channels.end())
+		return (NULL);
+	return (it->second);
+}
+
+Channel*	Server::getOrCreateChannel(const std::string& name)
+{
+	std::string lower = Channel::toLower(name);
+	if (_channels.find(lower) == _channels.end())
+		_channels[lower] = new Channel(name);
+	return (_channels[lower]);
+}
+
+void	Server::removeEmptyChannel(const std::string& nameLower)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(nameLower);
+	if (it != _channels.end() && it->second->isEmpty())
+	{
+		delete (it->second);
+		_channels.erase(it);
+	}
+}
+

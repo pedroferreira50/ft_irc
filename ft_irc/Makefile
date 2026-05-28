@@ -6,6 +6,7 @@ SRCS     = main.cpp \
            Server.cpp \
            Client.cpp \
            Parser.cpp \
+           Channel.cpp \
            commands/pass.cpp \
            commands/nick.cpp \
            commands/user.cpp \
