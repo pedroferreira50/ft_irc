@@ -73,6 +73,7 @@ void Server::_initCommands()
 	_commands["NICK"] = &cmd_nick;
 	_commands["USER"] = &cmd_user;
 	_commands["PING"] = &cmd_ping;
+	_commands["JOIN"] = &cmd_join;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
@@ -257,7 +258,7 @@ void Server::_setPollEvent(int fd, short event, bool on)
 
 void Server::_dispatch(Client& client, const Message& msg)
 {
-	static const std::string         preReg[] = {"PASS", "NICK", "USER", "PING", ""};
+	static const std::string         preReg[] = {"PASS", "NICK", "USER", "PING", "JOIN", ""};
 	std::map<std::string, CmdFn>::iterator it;
 	std::string                       nick;
 	bool                              requiresReg;
