@@ -4,7 +4,7 @@ void	cmd_join(Server& srv, Client& client, const std::vector<std::string>& param
 {
 	/* verificacoes */
 	if (params.empty())
-		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, " :Not enough parameters"));
+		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "JOIN :Not enough parameters"));
 	if (!Channel::isValidName(params[0]))
 		return srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[0] + " :No such channel"));
 	
@@ -31,5 +31,13 @@ void	cmd_join(Server& srv, Client& client, const std::vector<std::string>& param
 	channel->removeInvited(client.getNick());
 
 	/* mensagem */
-	return (srv.sendMsg(client, reply(srv, client, RPL_WELCOME, params[0])));
+	const std::string joinMsg = ":" + client.getPrefix() + " JOIN " + channel->getName() + "\r\n";
+	channel->broadcastAll(srv, joinMsg);
+	if (channel->getTopic().empty())
+		srv.sendMsg(client, reply(srv, client, RPL_NOTOPIC, channel->getName() + " :No topic is set"));
+	else
+		srv.sendMsg(client, reply(srv, client, RPL_TOPIC, channel->getName() + " :" + channel->getTopic()));
+	/* lista de membros do canal */
+	srv.sendMsg(client, reply(srv, client, RPL_NAMREPLY, "= " + channel->getName() + " :" + channel->getMemberList()));
+	srv.sendMsg(client, reply(srv, client, RPL_ENDOFNAMES, channel->getName() + " :End of /NAMES list"));
 }

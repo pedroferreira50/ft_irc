@@ -18,5 +18,9 @@
 # define ERR_BADCHANNELKEY		"475"
 # define ERR_INVITEONLYCHAN		"473"
 # define ERR_CHANNELISFULL		"471"
+# define RPL_NOTOPIC			"331"
+# define RPL_TOPIC				"332"
+# define RPL_NAMREPLY			"353"
+# define RPL_ENDOFNAMES			"366"
 
 #endif
