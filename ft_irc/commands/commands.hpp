@@ -21,5 +21,7 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 void cmd_user(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_ping(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_join(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_part(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& params);
 
 #endif

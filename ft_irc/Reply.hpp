@@ -22,5 +22,9 @@
 # define RPL_TOPIC				"332"
 # define RPL_NAMREPLY			"353"
 # define RPL_ENDOFNAMES			"366"
+# define ERR_NOTONCHANNEL		"442"
+# define ERR_NOTEXTTOSEND		"412"
+# define ERR_NORECIPIENT		"411"
+# define ERR_NOSUCHNICK			"401"
 
 #endif

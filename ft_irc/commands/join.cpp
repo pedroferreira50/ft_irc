@@ -1,15 +1,16 @@
 #include "commands.hpp"
 
+/* @QUESTION: a lista de membros de um canal pode ser por conexao no servidor ou deve ser por insercao no canal ?*/
 void	cmd_join(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	/* verificacoes */
 	if (params.empty())
-		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "JOIN :Not enough parameters"));
+		return (srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "JOIN :Not enough parameters")));
 	if (!Channel::isValidName(params[0]))
-		return srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[0] + " :No such channel"));
+		return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[0] + " :No such channel")));
 	
-	std::string password = params.size() > 1 ? params[1] : "";
-	Channel* channel =  srv.getChannel(params[0]);
+	std::string	password = params.size() > 1 ? params[1] : "";
+	Channel*	channel = srv.getChannel(params[0]);
 
 	/* outras verificacoes */
 	if (channel)

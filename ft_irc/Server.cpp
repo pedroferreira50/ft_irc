@@ -74,6 +74,8 @@ void Server::_initCommands()
 	_commands["USER"] = &cmd_user;
 	_commands["PING"] = &cmd_ping;
 	_commands["JOIN"] = &cmd_join;
+	_commands["PART"] = &cmd_part;
+	_commands["PRIVMSG"] = &cmd_privmsg;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
