@@ -76,6 +76,7 @@ void Server::_initCommands()
 	_commands["JOIN"] = &cmd_join;
 	_commands["PART"] = &cmd_part;
 	_commands["PRIVMSG"] = &cmd_privmsg;
+	_commands["QUIT"] = &cmd_quit;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
@@ -158,6 +159,13 @@ void Server::_acceptClient()
 
 	std::cout << "[+] Client connected: fd=" << clientFd
 	          << " ip=" << inet_ntoa(addr.sin_addr) << std::endl;
+	/* mensagem de instrucoes */
+	std::string instructions = 
+	    ":" + _serverName + " NOTICE Auth :*** To get started, please set PASS, USER and NICK.\r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'PASS <ServerPass>' \r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'USER <YourName> 0 * :<RealName>' \r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'NICK <YourNickname>'\r\n";
+	sendMsg(*_clients[clientFd], instructions);
 }
 
 bool Server::_readClient(int fd)
@@ -260,7 +268,7 @@ void Server::_setPollEvent(int fd, short event, bool on)
 
 void Server::_dispatch(Client& client, const Message& msg)
 {
-	static const std::string         preReg[] = {"PASS", "NICK", "USER", "PING", "JOIN", ""};
+	static const std::string         preReg[] = {"PASS", "NICK", "USER", "PING", ""};
 	std::map<std::string, CmdFn>::iterator it;
 	std::string                       nick;
 	bool                              requiresReg;

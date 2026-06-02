@@ -13,7 +13,8 @@ SRCS     = main.cpp \
            commands/ping.cpp \
            commands/join.cpp \
            commands/part.cpp \
-           commands/privmsg.cpp
+           commands/privmsg.cpp \
+           commands/quit.cpp
 
 OBJ_DIR  = obj
 OBJS     = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
