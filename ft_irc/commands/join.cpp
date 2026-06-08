@@ -1,6 +1,5 @@
 #include "commands.hpp"
 
-/* @QUESTION: a lista de membros de um canal pode ser por conexao no servidor ou deve ser por insercao no canal ?*/
 void	cmd_join(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	/* verificacoes */
