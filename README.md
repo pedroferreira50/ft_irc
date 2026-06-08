@@ -6,19 +6,29 @@ Some client command implemantation.
 
 [x] mensagem de instrucoes (PASS, USER e NICK) quando o cliente se conectar
 
-@TODO: para o exemplo ( PRIVMSG #geral,#hum :ola boa noite ) precisamos dividir o "#geral,#hum" em strings para que
+[ ] para o exemplo ( PRIVMSG #geral,#hum :ola boa noite ) precisamos dividir o "#geral,#hum" em strings para que
 a mensagem seja enviada a todos os usuarios ou grupos listados
 
-@TODO: criar set para clientes únicos que precisam ser avisados quando um usuario usar QUIT
-para que a mensagem nao se repita para todos os grupos partilhados por 2 usuarios
+/* @QUESTION: a lista de membros de um canal pode ser por conexao no servidor ou deve ser por insercao no canal ?
+	@SOLUTION: devo exibir o proprio nome e depois ou membros por ordem alfabetica */
 
 @BUG: iniciando o servidor com senha vazia assim ( ./ircserv 6667 "" ) o parser permite,
 mas os clientes nao conseguem se conectar pois o sistema responde com senha incorreta para isso ( pass "" ) 
 e falta de argumentos para isso ( pass ).
 @SOLUTION: fiz com que nao seja possivel iniciar o servidor com senha vazia ( ./ircserv 6667 "" )
+[ ] fazer com que o seja possivel iniciar o servidor sem senha 
 
+[ ] tratar sobre os nomes de canais #geral #GERAL, salvar como passado e comparar literal
+
+[ ] criar set para clientes únicos que precisam ser avisados quando um usuario usar QUIT
+para que a mensagem nao se repita para todos os grupos partilhados por 2 usuarios
+
+@QUESTION: e possivel criar canal ja com topicou ou preciso cria-lo depois usar TOPIC para definir?
+@INFO: comando OPER usado para promover clientes 
+@INFO: o canal deve ter o nome passado pelo usuario e nao deve existir nome igual
 
 @INFO: Atualmente apenas um leak de poll 
+[ ] testar leaks com QUIT
 
 Server listening on port 6667
 [+] Client connected: fd=4 ip=127.0.0.1
