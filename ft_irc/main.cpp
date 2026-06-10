@@ -19,9 +19,6 @@ int main(int argc, char **argv)
 		std::cerr << "Error: invalid port" << std::endl;
 		return 1;
 	}
-	std::string password = argv[2];
-	if (password.empty())
-		return (std::cerr << "Error: invalid password" << std::endl, 1);
 
 	try
 	{

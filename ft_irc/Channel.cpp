@@ -51,12 +51,24 @@ int	Channel::getMemberCount() const
 std::string Channel::getMemberList() const
 {
 	std::string list;
+
+	/* primeiro operadores */
 	for (std::map<Client*, bool>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 	{
+		if (!it->second)
+			continue ;
 		if (!list.empty())
 			list += " ";
+		list += "@" + it->first->getNick();
+	}
+
+	/* membros comuns */
+	for (std::map<Client*, bool>::const_iterator it = _members.begin(); it != _members.end(); ++it)
+	{
 		if (it->second)
-			list += "@";
+			continue ;
+		if (!list.empty())
+			list += " ";
 		list += it->first->getNick();
 	}
 	return (list);

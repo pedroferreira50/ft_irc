@@ -11,9 +11,21 @@
 #include <stdexcept>
 #include <cerrno>
 
+bool	Server::_running = true;
+
+static void	signalHandler(int signal)
+{
+	(void)signal;
+	Server::_running = false;
+	std::cout << std::endl;
+}
+
 Server::Server(int port, const std::string& password)
 	: _fd(-1), _port(port), _password(password), _serverName("irc.local")
 {
+	signal(SIGINT, signalHandler);
+	signal(SIGTERM, signalHandler);
+	signal(SIGPIPE, SIG_IGN);
 	_createSocket();
 	_initCommands();
 }
@@ -83,7 +95,7 @@ void Server::_initCommands()
 
 void Server::run()
 {
-	while (true)
+	while (_running)
 	{
 		int ready;
 

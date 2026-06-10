@@ -5,6 +5,7 @@
 # include <map>
 # include <string>
 # include <poll.h>
+# include <signal.h>
 # include "Client.hpp"
 # include "Parser.hpp"
 
@@ -37,8 +38,8 @@ public:
 	Server(int port, const std::string& password);
 	~Server();
 
-	void run();
-
+	static bool						_running;
+	void							run();
 	void							sendMsg(Client& client, const std::string& msg);
 	Client*							getClientByNick(const std::string& nick) const;
 	void							checkRegistration(Client& client);

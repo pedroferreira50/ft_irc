@@ -9,5 +9,8 @@ void cmd_user(Server& srv, Client& client, const std::vector<std::string>& param
 
 	client.setUser(params[0]);
 	client.setRealname(params[3]);
+	/* se senha for vazia e ja estiver setado o nick, autentica o cliente */
+	if (srv.getPassword().empty() && !client.getNick().empty())
+		client.setAuthenticated(true);
 	srv.checkRegistration(client);
 }
