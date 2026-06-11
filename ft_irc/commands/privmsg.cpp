@@ -5,6 +5,7 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 	/* verificacoes */ /* "#geral" "OLa" */ /* ola */
 	if (params.empty())
 		return (srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "PRIVMSG :Not enough parameters")));
+	/* splitar o params[0] por ',' e fazer um loop para enviar as mensagens para cada user/channel */
 	if (params.size() == 1) /* pode ser simplicado para 'Not enough parameters' se foi diferente de 2 */
 	{
 		if ((!params[0].empty() && params[0][0] == '#') 
@@ -32,7 +33,7 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 			Client*	recipient = srv.getClientByNick(params[0]);
 	
 			if (!recipient)
-				return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, params[0] + " :Not such nick")));
+				return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, params[0] + " :No such nick")));
 			const std::string privMsg = ":" + client.getPrefix() + " PRIVMSG " + recipient->getNick() + " :" + params[1] + "\r\n";
 			srv.sendMsg(*recipient, privMsg);
 		}

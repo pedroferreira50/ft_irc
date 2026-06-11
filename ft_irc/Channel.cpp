@@ -209,7 +209,7 @@ void	Channel::removeInvited(const std::string& nick)
 
 bool	Channel::isValidName(const std::string& name)
 {
-	if (name.empty() || name.size() <= 1 || name.size() > 50 || name[0] != '#')
+	if (name.empty() || name.size() <= 1 || name.size() > 50 || (name[0] != '#' && name[0] != '&'))	
 		return (false);
 	for (size_t i = 0; i < name.size(); ++i)
 	{
