@@ -15,29 +15,49 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 		return (srv.sendMsg(client, reply(srv, client, ERR_NORECIPIENT, "PRIVMSG :No recipient given")));
 	}
 
-	if (params.size() >= 2 && !params[0].empty() && !params[1].empty())
+	std::vector<std::string> targets = split(params[0], ',');
+
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
-		if (params[0][0] == '#') /* mensagem no grupo */
+		// preciso testar se este check e correto, para caso empty do tipo PRIVMSG #channel msg1, :hello (virgula faz segundo parameter empty)
+		if (targets[i].empty())
+			continue ;
+		if (params.size() >= 2 && !targets[i].empty() && !params[1].empty())
 		{
-			Channel*	channel = srv.getChannel(params[0]);
-			if (!channel)
-				return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[0] + " :No such channel")));
-			if (!channel->isMember(client))
-				return (srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, params[0] + " :Not channel member")));
-	
-			const std::string privMsg = ":" + client.getPrefix() + " PRIVMSG " + channel->getName() + " :" + params[1] + "\r\n";
-			channel->broadcast(srv, client, privMsg);
+			if (targets[i][0] == '#') /* mensagem no grupo */
+			{
+				Channel*	channel = srv.getChannel(targets[i]);
+				if (!channel)
+				{
+					srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, targets[i] + " :No such channel"));
+					continue ;
+				}
+				if (!channel->isMember(client))
+				{
+					srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, targets[i] + " :Not channel member"));
+					continue ;
+				}	
+		
+				const std::string privMsg = ":" + client.getPrefix() + " PRIVMSG " + channel->getName() + " :" + params[1] + "\r\n";
+				channel->broadcast(srv, client, privMsg);
+			}
+			else /* mensagem privada */
+			{
+				Client*	recipient = srv.getClientByNick(targets[i]);
+		
+				if (!recipient)
+				{
+					srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, targets[i] + " :No such nick"));
+					continue ;
+				}
+				const std::string privMsg = ":" + client.getPrefix() + " PRIVMSG " + recipient->getNick() + " :" + params[1] + "\r\n";
+				srv.sendMsg(*recipient, privMsg);
+			}
 		}
-		else /* mensagem privada */
+		else
 		{
-			Client*	recipient = srv.getClientByNick(params[0]);
-	
-			if (!recipient)
-				return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, params[0] + " :No such nick")));
-			const std::string privMsg = ":" + client.getPrefix() + " PRIVMSG " + recipient->getNick() + " :" + params[1] + "\r\n";
-			srv.sendMsg(*recipient, privMsg);
+			srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "PRIVMSG :Not enough parameters"));
+			continue ;
 		}
 	}
-	else
-		return (srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "PRIVMSG :Not enough parameters")));
 }

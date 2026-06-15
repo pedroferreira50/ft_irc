@@ -17,7 +17,10 @@ void    cmd_quit(Server& srv, Client& client, const std::vector<std::string>& pa
 		/* remove e deleta canal se for o ultimo membro */
 		channel->broadcast(srv, client, quitMsg);
 		channel->removeMember(client);
+		client.leaveChannel(*it);
 		srv.removeEmptyChannel(*it);
 	}
+	std::string reason = params.size() >= 1 ? params[0] : "Client Quit";
+	srv.sendMsg(client, "ERROR :Quit: " + reason + "\r\n");
 	srv.disconnectClient(client);
 }

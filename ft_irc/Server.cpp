@@ -92,6 +92,7 @@ void Server::_initCommands()
 	_commands["PART"] = &cmd_part;
 	_commands["PRIVMSG"] = &cmd_privmsg;
 	_commands["QUIT"] = &cmd_quit;
+	_commands["MODE"] = &cmd_mode;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
@@ -244,6 +245,18 @@ bool Server::_writeClient(int fd)
 
 void Server::_removeClient(int fd)
 {
+	std::string quitMsg = ":" + _clients[fd]->getPrefix() + " QUIT :EOF from client\r\n";
+	std::set<std::string> channels = _clients[fd]->getChannelList();
+	for (std::set<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
+	{
+		Channel* channel = getChannel(*it);
+		if (!channel)
+			continue;
+		channel->broadcast(*this, *_clients[fd], quitMsg);
+		channel->removeMember(*_clients[fd]);
+		removeEmptyChannel(*it);
+	}
+
 	const std::string& wbuf = _clients[fd]->getWriteBuf();
 
 	if (!wbuf.empty())
@@ -329,11 +342,11 @@ void Server::sendMsg(Client& client, const std::string& msg)
 	client.getWriteBuf() += msg;
 	_setPollEvent(client.getFd(), POLLOUT, true);
 }
-
+//toLower esta ser usado para nicks serem o mesmo idependente se e maiusculo ou nao
 Client* Server::getClientByNick(const std::string& nick) const
 {
 	for (std::map<int, Client*>::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
-		if (it->second->getNick() == nick)
+		if (Channel::toLower(it->second->getNick()) == Channel::toLower(nick))
 			return it->second;
 	return NULL;
 }

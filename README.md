@@ -78,3 +78,12 @@ Server listening on port 6667
 ==9723==
 ==9723== For lists of detected and suppressed errors, rerun with: -s
 ==9723== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+Dei fix nos erros de valgrind que estavam ser causados por um pointer que apontava para o client quando este saia do programa com ctrl-c, ele ficava na lista da channel ainda e se desse PRIVMSG tentava acessar um pointer que ja nao devia existir e dava erro.
+
+Alterei PART, JOIN E PRIVMSG para aceita varias açoes ao mesmo tempo do tipo JOIN #chan1,#chan2#,chan3 mesmo com o part e PRIVMSG #chan1,#chan2,nick1,nick :hello cuidado que tem que ser sem espacos
+
+Fiz uma alteraçao no server.cpp linha 349 para usar toLower quando compara nicks, assim BOB e bob vai ser o mesmo nick, e assim que o irc normal faz, mesmo com as channels.
+
+Fiz tambem to comando MODE, testei bastante mas se encontrarem algum erro digam.
