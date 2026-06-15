@@ -4,6 +4,7 @@
 # include "../Server.hpp"
 # include "../Client.hpp"
 # include "../Reply.hpp"
+# include "../Channel.hpp"
 # include <vector>
 # include <string>
 
@@ -19,5 +20,9 @@ void cmd_pass(Server& srv, Client& client, const std::vector<std::string>& param
 void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_user(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_ping(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_join(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_part(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_quit(Server& srv, Client& client, const std::vector<std::string>& params);
 
 #endif

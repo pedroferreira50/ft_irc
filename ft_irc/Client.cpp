@@ -84,3 +84,23 @@ std::string& Client::getWriteBuf()
 {
 	return _writeBuf;
 }
+
+const std::set<std::string>& Client::getChannelList() const
+{
+	return (_channelList);
+}
+
+void	Client::joinChannel(const std::string& nameLower)
+{
+	_channelList.insert(nameLower);
+}
+
+void	Client::leaveChannel(const std::string& nameLower)
+{
+	_channelList.erase(nameLower);
+}
+
+bool	Client::isInChannel(const std::string& nameLower) const
+{
+	return (_channelList.find(nameLower) != _channelList.end());
+}

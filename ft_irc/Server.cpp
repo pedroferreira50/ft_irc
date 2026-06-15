@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include "commands/commands.hpp"
+#include "Channel.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -10,9 +11,21 @@
 #include <stdexcept>
 #include <cerrno>
 
+bool	Server::_running = true;
+
+static void	signalHandler(int signal)
+{
+	(void)signal;
+	Server::_running = false;
+	std::cout << std::endl;
+}
+
 Server::Server(int port, const std::string& password)
 	: _fd(-1), _port(port), _password(password), _serverName("irc.local")
 {
+	signal(SIGINT, signalHandler);
+	signal(SIGTERM, signalHandler);
+	signal(SIGPIPE, SIG_IGN);
 	_createSocket();
 	_initCommands();
 }
@@ -20,7 +33,12 @@ Server::Server(int port, const std::string& password)
 Server::~Server()
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		close(it->first);
 		delete it->second;
+	}
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		delete (it->second);
 	close(_fd);
 }
 
@@ -70,13 +88,17 @@ void Server::_initCommands()
 	_commands["NICK"] = &cmd_nick;
 	_commands["USER"] = &cmd_user;
 	_commands["PING"] = &cmd_ping;
+	_commands["JOIN"] = &cmd_join;
+	_commands["PART"] = &cmd_part;
+	_commands["PRIVMSG"] = &cmd_privmsg;
+	_commands["QUIT"] = &cmd_quit;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
 
 void Server::run()
 {
-	while (true)
+	while (_running)
 	{
 		int ready;
 
@@ -152,6 +174,13 @@ void Server::_acceptClient()
 
 	std::cout << "[+] Client connected: fd=" << clientFd
 	          << " ip=" << inet_ntoa(addr.sin_addr) << std::endl;
+	/* mensagem de instrucoes */
+	std::string instructions = 
+	    ":" + _serverName + " NOTICE Auth :*** To get started, please set PASS, USER and NICK.\r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'PASS <ServerPass>' \r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'USER <YourName> 0 * :<RealName>' \r\n"
+	    ":" + _serverName + " NOTICE Auth :*** Use 'NICK <YourNickname>'\r\n";
+	sendMsg(*_clients[clientFd], instructions);
 }
 
 bool Server::_readClient(int fd)
@@ -336,3 +365,30 @@ const std::string& Server::getServerName() const
 {
 	return _serverName;
 }
+
+Channel*	Server::getChannel(const std::string& name) const
+{
+	std::map<std::string, Channel*>::const_iterator it = _channels.find(Channel::toLower(name));
+	if (it == _channels.end())
+		return (NULL);
+	return (it->second);
+}
+
+Channel*	Server::getOrCreateChannel(const std::string& name)
+{
+	std::string lower = Channel::toLower(name);
+	if (_channels.find(lower) == _channels.end())
+		_channels[lower] = new Channel(name);
+	return (_channels[lower]);
+}
+
+void	Server::removeEmptyChannel(const std::string& nameLower)
+{
+	std::map<std::string, Channel*>::iterator it = _channels.find(nameLower);
+	if (it != _channels.end() && it->second->isEmpty())
+	{
+		delete (it->second);
+		_channels.erase(it);
+	}
+}
+

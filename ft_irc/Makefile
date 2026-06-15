@@ -6,23 +6,30 @@ SRCS     = main.cpp \
            Server.cpp \
            Client.cpp \
            Parser.cpp \
+           Channel.cpp \
            commands/pass.cpp \
            commands/nick.cpp \
            commands/user.cpp \
-           commands/ping.cpp
+           commands/ping.cpp \
+           commands/join.cpp \
+           commands/part.cpp \
+           commands/privmsg.cpp \
+           commands/quit.cpp
 
-OBJS     = $(SRCS:.cpp=.o)
+OBJ_DIR  = obj
+OBJS     = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 
-%.o: %.cpp
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)

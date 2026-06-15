@@ -36,5 +36,8 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 		srv.sendMsg(client, ":" + client.getPrefix() + " NICK :" + newNick + "\r\n");
 
 	client.setNick(newNick);
+	/* se senha for vazia e ja estiver setado o user, autentica o cliente */
+	if (srv.getPassword().empty() && !client.getUser().empty())
+		client.setAuthenticated(true);
 	srv.checkRegistration(client);
 }
