@@ -30,5 +30,6 @@
 # define RPL_CHANNELMODEIS		"324"
 # define ERR_USERONCHANNEL		"443"
 # define RPL_INVITING			"341"
+# define ERR_USERNOTINCHANNEL	"441"
 
 #endif

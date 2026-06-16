@@ -94,6 +94,7 @@ void Server::_initCommands()
 	_commands["QUIT"] = &cmd_quit;
 	_commands["MODE"] = &cmd_mode;
 	_commands["INVITE"] = &cmd_invite;
+	_commands["KICK"] = &cmd_kick;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
