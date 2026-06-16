@@ -93,6 +93,7 @@ void Server::_initCommands()
 	_commands["PRIVMSG"] = &cmd_privmsg;
 	_commands["QUIT"] = &cmd_quit;
 	_commands["MODE"] = &cmd_mode;
+	_commands["INVITE"] = &cmd_invite;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
@@ -245,6 +246,7 @@ bool Server::_writeClient(int fd)
 
 void Server::_removeClient(int fd)
 {
+	/* @QUESTION: porque "EOF from client" ?*/
 	std::string quitMsg = ":" + _clients[fd]->getPrefix() + " QUIT :EOF from client\r\n";
 	std::set<std::string> channels = _clients[fd]->getChannelList();
 	for (std::set<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
