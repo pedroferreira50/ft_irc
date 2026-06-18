@@ -34,6 +34,8 @@ Server::~Server()
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
+		std::string	errorMsg = "ERROR :Server shutting down\r\n";
+		send(it->first, errorMsg.c_str(), errorMsg.size(), 0);
 		close(it->first);
 		delete it->second;
 	}
