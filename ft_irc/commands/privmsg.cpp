@@ -1,5 +1,6 @@
 #include "commands.hpp"
 
+/* @TODO: 'PRIVMSG #geral : ' precisa identificar msg vazia ': ' e retonar 412 ERR_NOTEXTTOSEND */
 void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	/* verificacoes */ /* "#geral" "OLa" */ /* ola */

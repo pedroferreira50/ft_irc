@@ -32,6 +32,7 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 	if (existing && existing != &client)
 		return srv.sendMsg(client, reply(srv, client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use"));
 
+	/* @TODO: mudanca de nick precisa ser notificada a todos os canais que o usuario estiver */
 	if (client.isRegistered())
 		srv.sendMsg(client, ":" + client.getPrefix() + " NICK :" + newNick + "\r\n");
 

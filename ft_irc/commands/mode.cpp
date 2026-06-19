@@ -33,7 +33,7 @@ static void	modeOperator(Server& srv, Client& client, Channel* channel, const st
 	broadcastMode(srv, client, channel, modeStr, params[2]);
 }
 
-
+/* @TODO: aceitar varias flags em um unico comando */
 void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	

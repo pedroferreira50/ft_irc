@@ -23,9 +23,9 @@ passando qualquer valor em 'pass'
 @ANSWER: precisa criar e depois setar com TOPIC 
 [ ] criar comando TOPIC 
 
-[ ] criar comando KICK
-[ ] criar comando INVITE
-[ ] criar comando MODE
+[x] criar comando KICK
+[x] criar comando INVITE
+[x] criar comando MODE
 
 @INFO: comando OPER promove um cliente a IRC operator, um admin global do servidor 
 diferente de operador de canal, e isso o projeto nao exige
@@ -41,7 +41,7 @@ sempre faco 'toLower' para operacoes como (JOIN, PART, PRIVMSG...), coisa que ac
 [x] criar handle_signal parar fechar o programa em caso de CTRL+C
 [x] liberar fds e poll no encerramento do programa 
 
-[ ] para o exemplo ( PRIVMSG #geral,#hum :ola boa noite ) precisamos dividir o "#geral,#hum" em strings 
+[x] para o exemplo ( PRIVMSG #geral,#hum :ola boa noite ) precisamos dividir o "#geral,#hum" em strings 
 para que a mensagem seja enviada a todos os usuarios ou grupos listados 
 
 [x] verificar se essa mensagem esta correta:
