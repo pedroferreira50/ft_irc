@@ -9,14 +9,16 @@ void	cmd_invite(Server& srv, Client& client, const std::vector<std::string>& par
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[1] + " :No such channel")));
 	if (!channel->isMember(client))
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, params[1] + " :Not channel member")));
+		//mudei params[0] para params[1]
 	if (!channel->isOperator(client))
-		return (srv.sendMsg(client, reply(srv, client, ERR_CHANOPRIVSNEEDED, params[0] + " :Not channel operator")));
+		return (srv.sendMsg(client, reply(srv, client, ERR_CHANOPRIVSNEEDED, params[1] + " :You're not channel operator")));
 	
 	Client* invited = srv.getClientByNick(params[0]);
 	if (!invited)
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, params[0] + " :No such nick")));
+		//mudei mensagem e faltava o nome da channel;
 	if (channel->isMember(*invited))
-		return (srv.sendMsg(client, reply(srv, client, ERR_USERONCHANNEL, params[0] + " :User already member channel")));
+		return (srv.sendMsg(client, reply(srv, client, ERR_USERONCHANNEL, params[0] + " " + channel->getName() + " :is already on channel")));
 
 	channel->addInvited(invited->getNick());
 	srv.sendMsg(client, reply(srv, client, RPL_INVITING, invited->getNick() + " " + channel->getName()));

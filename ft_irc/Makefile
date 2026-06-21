@@ -17,7 +17,8 @@ SRCS     = main.cpp \
            commands/quit.cpp \
            commands/mode.cpp \
            commands/invite.cpp \
-           commands/kick.cpp
+           commands/kick.cpp \
+           commands/topic.cpp
 
 OBJ_DIR  = obj
 OBJS     = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)

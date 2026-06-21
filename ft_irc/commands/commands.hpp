@@ -38,5 +38,6 @@ void cmd_quit(Server& srv, Client& client, const std::vector<std::string>& param
 void cmd_mode(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_invite(Server& srv, Client& client, const std::vector<std::string>& params);
 void cmd_kick(Server& srv, Client& client, const std::vector<std::string>& params);
+void cmd_topic(Server& srv, Client& client, const std::vector<std::string>& params);
 
 #endif

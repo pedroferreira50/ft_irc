@@ -11,9 +11,9 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 	{
 		if ((!params[0].empty() && params[0][0] == '#') 
 			|| srv.getClientByNick(params[0]) != NULL) /* somente recipiente (canal ou usuario), sem mensagem */
-			return (srv.sendMsg(client, reply(srv, client, ERR_NOTEXTTOSEND, "PRIVMSG :No text to send")));
+			return (srv.sendMsg(client, reply(srv, client, ERR_NOTEXTTOSEND, ":No text to send")));//tirei o PRIVMSG: da mensagem irc nao tem
 		/* nao passou canal nem usuario */
-		return (srv.sendMsg(client, reply(srv, client, ERR_NORECIPIENT, "PRIVMSG :No recipient given")));
+		return (srv.sendMsg(client, reply(srv, client, ERR_NORECIPIENT, ":No recipient given (PRIVMSG)")));//tirei o PRIVMGS: e ficou no fim de acordo com irc
 	}
 
 	std::vector<std::string> targets = split(params[0], ',');
@@ -23,8 +23,14 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 		// preciso testar se este check e correto, para caso empty do tipo PRIVMSG #channel msg1, :hello (virgula faz segundo parameter empty)
 		if (targets[i].empty())
 			continue ;
-		if (params.size() >= 2 && !targets[i].empty() && !params[1].empty())
+		if (params.size() >= 2 && !targets[i].empty())
 		{
+			// novo check que faltava
+			if (params[1].empty())
+			{
+				srv.sendMsg(client, reply(srv, client, ERR_NOTEXTTOSEND, ":No text to send"));
+				continue ;
+			}
 			if (targets[i][0] == '#') /* mensagem no grupo */
 			{
 				Channel*	channel = srv.getChannel(targets[i]);

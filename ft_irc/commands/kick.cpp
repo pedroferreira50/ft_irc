@@ -30,7 +30,7 @@ void	cmd_kick(Server& srv, Client& client, const std::vector<std::string>& param
 		}
 		if (!channel->isMember(*target))
 		{
-			srv.sendMsg(client, reply(srv, client, ERR_USERNOTINCHANNEL , targets[i] + " :Not channel member"));
+			srv.sendMsg(client, reply(srv, client, ERR_USERNOTINCHANNEL, targets[i] + " " + channel->getName() + " :They aren't on that channel"));
 			continue ;
 		}
 		std::string kickMsg = ":" + client.getPrefix() + " KICK " + channel->getName() + " " + targets[i] + " :" + reason + "\r\n";
