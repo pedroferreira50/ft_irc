@@ -34,6 +34,8 @@ Server::~Server()
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
+		std::string	errorMsg = "ERROR :Server shutting down\r\n";
+		send(it->first, errorMsg.c_str(), errorMsg.size(), 0);
 		close(it->first);
 		delete it->second;
 	}
@@ -93,6 +95,9 @@ void Server::_initCommands()
 	_commands["PRIVMSG"] = &cmd_privmsg;
 	_commands["QUIT"] = &cmd_quit;
 	_commands["MODE"] = &cmd_mode;
+	_commands["INVITE"] = &cmd_invite;
+	_commands["KICK"] = &cmd_kick;
+	_commands["TOPIC"] = &cmd_topic;
 }
 
 // ── event loop ────────────────────────────────────────────────────────────────
@@ -245,6 +250,7 @@ bool Server::_writeClient(int fd)
 
 void Server::_removeClient(int fd)
 {
+	/* @QUESTION: porque "EOF from client" ?*/
 	std::string quitMsg = ":" + _clients[fd]->getPrefix() + " QUIT :EOF from client\r\n";
 	std::set<std::string> channels = _clients[fd]->getChannelList();
 	for (std::set<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)

@@ -96,6 +96,7 @@ std::string Channel::getModeString() const
 		std::string limit = ss.str();
 		params += " " + limit;
 	}
+	// li que e possivel que deva mandar "+" em vez "" temos que investigar
 	if (modes == "+")
 		return ("");
 	return (modes + params);
