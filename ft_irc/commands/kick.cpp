@@ -22,6 +22,9 @@ void	cmd_kick(Server& srv, Client& client, const std::vector<std::string>& param
 	std::vector<std::string> targets = split(params[1], ',');
 	for (size_t i = 0; i < targets.size(); ++i)
 	{
+		channel = srv.getChannel(params[0]);
+		if (!channel)
+			break ;
 		Client* target = srv.getClientByNick(targets[i]);
 		if (!target)
 		{
