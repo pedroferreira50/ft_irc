@@ -1,5 +1,11 @@
 #include "commands.hpp"
 
+/*
+	De momento so OP's podem mandar invite, mas se o channel nao for invite only, qualquer membro deveria poder convidar.
+	Podemos fazer esta alteraçao simples se quisermos implementar.
+	if (channel->isInviteOnly() && !channel->isOperator(client))
+*/
+
 void	cmd_invite(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	if (params.size() < 2)

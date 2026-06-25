@@ -157,6 +157,7 @@ void Server::_acceptClient()
 	int                clientFd;
 	struct pollfd      pfd;
 
+	/*criaçao de socket para o client*/
 	addrlen  = sizeof(addr);
 	clientFd = accept(_fd, (struct sockaddr*)&addr, &addrlen);
 	if (clientFd < 0)
@@ -164,14 +165,14 @@ void Server::_acceptClient()
 		std::cerr << "accept() failed" << std::endl;
 		return;
 	}
-
+	/*atribuiçao de "qualidades" ao client*/
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
 	{
 		std::cerr << "fcntl() on client failed" << std::endl;
 		close(clientFd);
 		return;
 	}
-
+	/*criaçao do novo client*/
 	pfd.fd      = clientFd;
 	pfd.events  = POLLIN;
 	pfd.revents = 0;
