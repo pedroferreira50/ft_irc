@@ -98,6 +98,8 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 		}
 		else if (mc.letter == 't')
 		{
+			if (channel->isTopicLocked() == (mc.sign == '+'))
+				continue;
 			channel->setTopicLocked(mc.sign == '+');
 			broadcastMode(srv, client, channel, std::string(1, mc.sign) + "t", "");
 		}
@@ -122,7 +124,7 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 				// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
 				if (channel->getKey().empty())
 					continue;
-				channel->setKey("");\
+				channel->setKey("");
 				// considerar nao dar broadcast à mensagem de alteraçao da key para a sala toda (talvez so para op's)
 				broadcastMode(srv, client, channel, "-k", "");
 			}

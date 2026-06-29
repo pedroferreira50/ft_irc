@@ -208,6 +208,12 @@ bool Server::_readClient(int fd)
 
 	rbuf.append(buf, n);
 
+	if (rbuf.size() > 1024)
+	{
+		_removeClient(fd);
+		return true;
+	}
+
 	while ((pos = rbuf.find('\n')) != std::string::npos)
 	{
 		line = rbuf.substr(0, pos);
