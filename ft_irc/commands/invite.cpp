@@ -16,7 +16,7 @@ void	cmd_invite(Server& srv, Client& client, const std::vector<std::string>& par
 	if (!channel->isMember(client))
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, params[1] + " :Not channel member")));
 		//mudei params[0] para params[1]
-	if (!channel->isOperator(client))
+	if (channel->isInviteOnly() && !channel->isOperator(client))
 		return (srv.sendMsg(client, reply(srv, client, ERR_CHANOPRIVSNEEDED, params[1] + " :You're not channel operator")));
 	
 	Client* invited = srv.getClientByNick(params[0]);

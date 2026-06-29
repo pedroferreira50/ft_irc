@@ -1,28 +1,28 @@
-NAME     = ircserv
-CXX      = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+NAME		= ircserv
+CXX			= c++
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 
-SRCS     = main.cpp \
-           Server.cpp \
-           Client.cpp \
-           Parser.cpp \
-           Channel.cpp \
-           commands/commands.cpp \
-           commands/pass.cpp \
-           commands/nick.cpp \
-           commands/user.cpp \
-           commands/ping.cpp \
-           commands/join.cpp \
-           commands/part.cpp \
-           commands/privmsg.cpp \
-           commands/quit.cpp \
-           commands/mode.cpp \
-           commands/invite.cpp \
-           commands/kick.cpp \
-           commands/topic.cpp
+SRCS		=	main.cpp \
+				Server.cpp \
+				Client.cpp \
+				Parser.cpp \
+				Channel.cpp \
+				commands/commands.cpp \
+				commands/pass.cpp \
+				commands/nick.cpp \
+				commands/user.cpp \
+				commands/ping.cpp \
+				commands/join.cpp \
+				commands/part.cpp \
+				commands/privmsg.cpp \
+				commands/quit.cpp \
+				commands/mode.cpp \
+				commands/invite.cpp \
+				commands/kick.cpp \
+				commands/topic.cpp
 
-OBJ_DIR  = obj
-OBJS     = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
+OBJ_DIR		= obj
+OBJS		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
@@ -40,5 +40,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+valgrind: $(NAME)
+	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes ./ircserv 6667 12
 
 .PHONY: all clean fclean re
