@@ -51,6 +51,18 @@ static void	broadcastMode(Server& srv, Client& client, Channel* channel, const s
 	channel->broadcastAll(srv, msg);
 }
 
+static bool isPositiveNumber(const std::string& s)
+{
+	if (s.empty())
+		return false;
+	for (size_t i = 0; i < s.size(); ++i)
+	{
+		if (!std::isdigit(s[i]))
+			return false;
+	}
+	return std::atoi(s.c_str()) > 0;
+}
+
 void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	if (params.empty())
@@ -62,6 +74,10 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 
 	if (params.size() == 1)
 		return srv.sendMsg(client, reply(srv, client, RPL_CHANNELMODEIS, channel->getName() + " " + channel->getModeString()));
+	
+	// adicionei isMember check para nao dar mensagem de erro a dizer q nao és o operador quando nem és membro do canal.
+	if (!channel->isMember(client))
+		return srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, params[0] + " :You're not on that channel"));
 
 	if (!channel->isOperator(client))
 		return srv.sendMsg(client, reply(srv, client, ERR_CHANOPRIVSNEEDED, params[0] + " :You're not channel operator"));
@@ -74,6 +90,9 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 
 		if (mc.letter == 'i')
 		{
+			// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
+			if (channel->isInviteOnly() == (mc.sign == '+'))
+				continue;
 			channel->setInviteOnly(mc.sign == '+');
 			broadcastMode(srv, client, channel, std::string(1, mc.sign) + "i", "");
 		}
@@ -91,12 +110,20 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 					srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "MODE :Not enough parameters"));
 					continue;
 				}
+				// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
+				if (channel->getKey() == mc.param)
+					continue;
 				channel->setKey(mc.param);
+				// considerar nao dar broadcast à mensagem de alteraçao da key para a sala toda (talvez so para op's)
 				broadcastMode(srv, client, channel, "+k", mc.param);
 			}
 			else
 			{
-				channel->setKey("");
+				// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
+				if (channel->getKey().empty())
+					continue;
+				channel->setKey("");\
+				// considerar nao dar broadcast à mensagem de alteraçao da key para a sala toda (talvez so para op's)
 				broadcastMode(srv, client, channel, "-k", "");
 			}
 		}
@@ -109,17 +136,24 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 					srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "MODE :Not enough parameters"));
 					continue;
 				}
-				int limit = std::atoi(mc.param.c_str());
-				if (limit <= 0)
+				// adicionei check para nao poderem passar parametros "123fsfjdshb" pelo atoi, virifica tambem se o numero é positivo.
+				if (!isPositiveNumber(mc.param))
 				{
-					srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "MODE :Invalid limit"));
+					srv.sendMsg(client, reply(srv, client, ERR_INVALIDMODEPARAM, "MODE :Invalid limit"));
 					continue;
 				}
+				int limit = std::atoi(mc.param.c_str());
+				// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
+				if (channel->getLimit() == limit)
+					continue;
 				channel->setLimit(limit);
 				broadcastMode(srv, client, channel, "+l", mc.param);
 			}
 			else
 			{
+				// adicionei check para nao dar mensagem de alteraçoes quando nao iriam alterar nada.
+				if (channel->getLimit() == 0)
+					continue;
 				channel->setLimit(0);
 				broadcastMode(srv, client, channel, "-l", "");
 			}
@@ -145,5 +179,8 @@ void	cmd_mode(Server& srv, Client& client, const std::vector<std::string>& param
 			channel->setOperator(*target, mc.sign == '+');
 			broadcastMode(srv, client, channel, std::string(1, mc.sign) + "o", mc.param);
 		}
+		else
+			srv.sendMsg(client, reply(srv, client, ERR_UNKNOWNMODE, std::string(1, mc.letter) + " :Is an unknown mode char"));
+		// adicionei else para caso a letra do mode nao ser uma letra esperada (verificar mensagem de erro).
 	}
 }
