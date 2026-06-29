@@ -9,7 +9,7 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 	/* splitar o params[0] por ',' e fazer um loop para enviar as mensagens para cada user/channel */
 	if (params.size() == 1) /* pode ser simplicado para 'Not enough parameters' se foi diferente de 2 */
 	{
-		if ((!params[0].empty() && params[0][0] == '#') 
+		if ((!params[0].empty() && (params[0][0] == '#' || params[0][0] == '&')) 
 			|| srv.getClientByNick(params[0]) != NULL) /* somente recipiente (canal ou usuario), sem mensagem */
 			return (srv.sendMsg(client, reply(srv, client, ERR_NOTEXTTOSEND, ":No text to send")));//tirei o PRIVMSG: da mensagem irc nao tem
 		/* nao passou canal nem usuario */
@@ -31,7 +31,7 @@ void	cmd_privmsg(Server& srv, Client& client, const std::vector<std::string>& pa
 				srv.sendMsg(client, reply(srv, client, ERR_NOTEXTTOSEND, ":No text to send"));
 				continue ;
 			}
-			if (targets[i][0] == '#') /* mensagem no grupo */
+			if (targets[i][0] == '#' || targets[i][0] == '&') /* mensagem no grupo */
 			{
 				Channel*	channel = srv.getChannel(targets[i]);
 				if (!channel)
