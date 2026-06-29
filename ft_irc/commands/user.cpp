@@ -17,7 +17,7 @@ void cmd_user(Server& srv, Client& client, const std::vector<std::string>& param
 {
 	if (client.isRegistered())
 		return srv.sendMsg(client, reply(srv, client, ERR_ALREADYREGISTRED, ":You may not reregister"));
-	if (params.size() < 4 || params[1] != "0" || params[2] != "*")
+	if (params.size() < 4)
 		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Not enough parameters"));
 	if (params.size() > 4)
 		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Too many parameters"));
