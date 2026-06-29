@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by login1, login2, login3.*
+*This project has been created as part of the 42 curriculum by luiz-dos, pviegas-, fiheaton.*
 
 # ft_irc
 
@@ -91,14 +91,13 @@ irssi -c 127.0.0.1 -p 6667 -w mypassword -n alice
 
 - [RFC 1459 — Internet Relay Chat Protocol](https://www.rfc-editor.org/rfc/rfc1459)
 - [RFC 2812 — Internet Relay Chat: Client Protocol](https://www.rfc-editor.org/rfc/rfc2812)
-- [RFC 2813 — Internet Relay Chat: Server Protocol](https://www.rfc-editor.org/rfc/rfc2813)
 - `man poll`, `man socket`, `man bind`, `man listen`, `man accept`, `man fcntl`
 
 ### AI usage
 
 AI (Claude) was used as a supporting tool during development, specifically for:
 
-- **Debugging**: investigating edge cases in command parsing, client registration flow, and channel mode handling, several of which are flagged in the code with `@QUESTION` / `@TODO` comments for follow-up.
+- **Debugging**: investigating edge cases in command parsing, client registration flow, and channel mode handling.
 - **Code review and explanation**: clarifying IRC protocol details (numeric reply codes, message framing) and reviewing non-blocking socket/`poll()` patterns against intended behavior.
 - **Documentation**: drafting this `README.md` based on a review of the existing source code.
 
