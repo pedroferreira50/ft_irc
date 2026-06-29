@@ -38,6 +38,8 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 	existing = srv.getClientByNick(newNick);
 	if (existing && existing != &client)
 		return srv.sendMsg(client, reply(srv, client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use"));
+	if (client.getNick() == newNick)
+		return;
 	//mundanca de nick para todos os canais, ficou um pouco confuso
 	if (client.isRegistered())
 	{
