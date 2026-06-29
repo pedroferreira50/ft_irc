@@ -9,6 +9,12 @@ void cmd_user(Server& srv, Client& client, const std::vector<std::string>& param
 		return srv.sendMsg(client, reply(srv, client, ERR_ALREADYREGISTRED, ":You may not reregister"));
 	if (params.size() < 4)
 		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Not enough parameters"));
+	if (params.size() > 4)
+		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Too many parameters"));
+	if (params[1] != "0")
+		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Second parameter must be 0"));
+	if (params[2] != "*")
+		return srv.sendMsg(client, reply(srv, client, ERR_NEEDMOREPARAMS, "USER :Third parameter must be *"));
 
 	client.setUser(params[0]);
 	client.setRealname(params[3]);

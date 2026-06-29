@@ -15,7 +15,7 @@ void cmd_pass(Server& srv, Client& client, const std::vector<std::string>& param
 	if (params[0] != srv.getPassword())
 	{
 		srv.sendMsg(client, reply(srv, client, ERR_PASSWDMISMATCH, ":Password incorrect"));
-		srv.disconnectClient(client);
+		client.setDC();
 		return;
 	}
 	client.setAuthenticated(true);

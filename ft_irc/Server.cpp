@@ -243,7 +243,14 @@ bool Server::_writeClient(int fd)
 	}
 	wbuf.erase(0, n);
 	if (wbuf.empty())
+	{
+		if (client->getDC())
+		{
+			_removeClient(fd);
+			return true;
+		}
 		_setPollEvent(fd, POLLOUT, false);
+	}
 	return false;
 }
 
@@ -367,11 +374,6 @@ void Server::checkRegistration(Client& client)
 	        + " :Welcome to the IRC network " + client.getPrefix() + "\r\n");
 	sendMsg(client, ":" + _serverName + " " + RPL_YOURHOST + " " + client.getNick()
 	        + " :Your host is " + _serverName + "\r\n");
-}
-
-void Server::disconnectClient(Client& client)
-{
-	_removeClient(client.getFd());
 }
 
 const std::string& Server::getPassword() const

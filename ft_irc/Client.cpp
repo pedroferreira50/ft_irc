@@ -2,7 +2,7 @@
 
 Client::Client(int fd, const std::string& hostname)
 	: _fd(fd), _hostname(hostname),
-	  _authenticated(false), _registered(false)
+	  _authenticated(false), _shouldDCAfterW(false), _registered(false)
 {
 }
 
@@ -40,6 +40,12 @@ const std::string& Client::getRealname() const
 	return _realname;
 }
 
+bool Client::getDC() const
+{
+	return _shouldDCAfterW;
+}
+
+
 bool Client::isAuthenticated() const
 {
 	return _authenticated;
@@ -73,6 +79,11 @@ void Client::setAuthenticated(bool val)
 void Client::setRegistered(bool val)
 {
 	_registered = val;
+}
+
+void Client::setDC()
+{
+	_shouldDCAfterW = true;
 }
 
 std::string& Client::getReadBuf()
