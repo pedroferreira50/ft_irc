@@ -13,6 +13,7 @@ private:
 	std::string						_user;
 	std::string						_realname;
 	bool							_authenticated;
+	bool							_shouldDCAfterW;
 	bool							_registered;
 	std::string						_readBuf;
 	std::string						_writeBuf;
@@ -36,10 +37,12 @@ public:
 	void							setRealname(const std::string& realname);
 	void							setAuthenticated(bool val);
 	void							setRegistered(bool val);
-
+	void 							setDC();
+	
 	std::string&					getReadBuf();
 	std::string&					getWriteBuf();
 	const std::set<std::string>&	getChannelList() const;
+	bool 							getDC() const;
 
 	void							joinChannel(const std::string& nameLower);
 	void							leaveChannel(const std::string& nameLower);

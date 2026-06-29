@@ -96,10 +96,9 @@ std::string Channel::getModeString() const
 		std::string limit = ss.str();
 		params += " " + limit;
 	}
-	// li que e possivel que deva mandar "+" em vez "" temos que investigar.
-	// segundo documentaçao que li, muitos clients esperam o "+" no minimo, entao alterei (precisa de testes).
-	if (modes == "+")
-		return ("+");
+	// li que e possivel que deva mandar "+" em vez "" temos que investigar
+	/* if (modes == "+")
+		return (""); */
 	return (modes + params);
 }
 

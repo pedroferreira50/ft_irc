@@ -43,7 +43,6 @@ public:
 	void							sendMsg(Client& client, const std::string& msg);
 	Client*							getClientByNick(const std::string& nick) const;
 	void							checkRegistration(Client& client);
-	void							disconnectClient(Client& client);
 
 	const std::string&				getPassword() const;
 	const std::string&				getServerName() const;

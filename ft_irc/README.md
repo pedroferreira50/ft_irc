@@ -102,3 +102,4 @@ AI (Claude) was used as a supporting tool during development, specifically for:
 - **Documentation**: drafting this `README.md` based on a review of the existing source code.
 
 All core design decisions and the implementation itself were written and validated by the project authors; AI was not used to autonomously generate the project from scratch.
+

@@ -208,6 +208,12 @@ bool Server::_readClient(int fd)
 
 	rbuf.append(buf, n);
 
+	if (rbuf.size() > 1024)
+	{
+		_removeClient(fd);
+		return true;
+	}
+
 	while ((pos = rbuf.find('\n')) != std::string::npos)
 	{
 		line = rbuf.substr(0, pos);
@@ -243,7 +249,14 @@ bool Server::_writeClient(int fd)
 	}
 	wbuf.erase(0, n);
 	if (wbuf.empty())
+	{
+		if (client->getDC())
+		{
+			_removeClient(fd);
+			return true;
+		}
 		_setPollEvent(fd, POLLOUT, false);
+	}
 	return false;
 }
 
@@ -367,11 +380,6 @@ void Server::checkRegistration(Client& client)
 	        + " :Welcome to the IRC network " + client.getPrefix() + "\r\n");
 	sendMsg(client, ":" + _serverName + " " + RPL_YOURHOST + " " + client.getNick()
 	        + " :Your host is " + _serverName + "\r\n");
-}
-
-void Server::disconnectClient(Client& client)
-{
-	_removeClient(client.getFd());
 }
 
 const std::string& Server::getPassword() const

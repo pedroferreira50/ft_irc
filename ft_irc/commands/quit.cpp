@@ -22,5 +22,5 @@ void    cmd_quit(Server& srv, Client& client, const std::vector<std::string>& pa
 	}
 	std::string reason = params.size() >= 1 ? params[0] : "Client Quit";
 	srv.sendMsg(client, "ERROR :Quit: " + reason + "\r\n");
-	srv.disconnectClient(client);
+	client.setDC();
 }
