@@ -11,15 +11,15 @@ class Server;
 class Channel
 {
 	private:
-		std::string						_name;			/* "#GeRaL" digitado pelo usuario */
-		std::string						_nameLower;		/* "#geral" padronizado */
-		std::string						_topic;			/* topico atual */
-		std::string						_key;			/* senha (+k), vazia se nao tiver */
-		int								_limit;			/* limite de membros (+l), 0 = sem limite */
-		bool							_inviteOnly;	/* modo +i */
-		bool							_topicLocked;	/* modo +t (so operador muda topic) */
-		std::map<Client*, bool>			_members;		/* Client* = true se for operador */
-		std::vector<std::string>		_invited;		/* nicks convidados via INVITE */
+		std::string						_name;
+		std::string						_nameLower;
+		std::string						_topic;
+		std::string						_key;
+		int								_limit;
+		bool							_inviteOnly;
+		bool							_topicLocked;
+		std::map<Client*, bool>			_members;
+		std::vector<std::string>		_invited;
 
 	public:
 		Channel(const std::string& name);
@@ -62,4 +62,4 @@ class Channel
 
 };
 
-#endif /* CHANNEL_HPP */
+#endif

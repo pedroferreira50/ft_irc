@@ -1,11 +1,5 @@
 #include "commands.hpp"
 
-/*
-	De momento so OP's podem mandar invite, mas se o channel nao for invite only, qualquer membro deveria poder convidar.
-	Podemos fazer esta alteraçao simples se quisermos implementar.
-	if (channel->isInviteOnly() && !channel->isOperator(client))
-*/
-
 void	cmd_invite(Server& srv, Client& client, const std::vector<std::string>& params)
 {
 	if (params.size() < 2)
@@ -15,14 +9,12 @@ void	cmd_invite(Server& srv, Client& client, const std::vector<std::string>& par
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHCHANNEL, params[1] + " :No such channel")));
 	if (!channel->isMember(client))
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOTONCHANNEL, params[1] + " :Not channel member")));
-		//mudei params[0] para params[1]
 	if (channel->isInviteOnly() && !channel->isOperator(client))
 		return (srv.sendMsg(client, reply(srv, client, ERR_CHANOPRIVSNEEDED, params[1] + " :You're not channel operator")));
 	
 	Client* invited = srv.getClientByNick(params[0]);
 	if (!invited)
 		return (srv.sendMsg(client, reply(srv, client, ERR_NOSUCHNICK, params[0] + " :No such nick")));
-		//mudei mensagem e faltava o nome da channel;
 	if (channel->isMember(*invited))
 		return (srv.sendMsg(client, reply(srv, client, ERR_USERONCHANNEL, params[0] + " " + channel->getName() + " :is already on channel")));
 

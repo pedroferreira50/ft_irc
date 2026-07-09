@@ -52,7 +52,6 @@ std::string Channel::getMemberList() const
 {
 	std::string list;
 
-	/* primeiro operadores */
 	for (std::map<Client*, bool>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 	{
 		if (!it->second)
@@ -62,7 +61,6 @@ std::string Channel::getMemberList() const
 		list += "@" + it->first->getNick();
 	}
 
-	/* membros comuns */
 	for (std::map<Client*, bool>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 	{
 		if (it->second)
@@ -96,9 +94,6 @@ std::string Channel::getModeString() const
 		std::string limit = ss.str();
 		params += " " + limit;
 	}
-	// li que e possivel que deva mandar "+" em vez "" temos que investigar
-	/* if (modes == "+")
-		return (""); */
 	return (modes + params);
 }
 

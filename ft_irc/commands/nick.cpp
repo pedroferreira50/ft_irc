@@ -1,7 +1,6 @@
 #include "commands.hpp"
 #include <cctype>
 
-//nova helper para ajudar com nicks, aparentemente o check antigo nao estava correto
 static bool isSpecial(char c)
 {
 	return c == '_' || c == '[' || c == ']' || c == '\\' || c == '`'
@@ -40,7 +39,6 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 		return srv.sendMsg(client, reply(srv, client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use"));
 	if (client.getNick() == newNick)
 		return;
-	//mundanca de nick para todos os canais, ficou um pouco confuso
 	if (client.isRegistered())
 	{
 		std::string              nickMsg = ":" + client.getPrefix() + " NICK :" + newNick + "\r\n";
@@ -68,7 +66,6 @@ void cmd_nick(Server& srv, Client& client, const std::vector<std::string>& param
 	}
 
 	client.setNick(newNick);
-	/* se senha for vazia e ja estiver setado o user, autentica o cliente */
 	if (srv.getPassword().empty() && !client.getUser().empty())
 		client.setAuthenticated(true);
 	srv.checkRegistration(client);
