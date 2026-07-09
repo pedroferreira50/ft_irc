@@ -14,7 +14,6 @@ void    cmd_quit(Server& srv, Client& client, const std::vector<std::string>& pa
 		Channel* channel = srv.getChannel(*it);
 		if (!channel)
 			continue ;
-		/* remove e deleta canal se for o ultimo membro */
 		channel->broadcast(srv, client, quitMsg);
 		channel->removeMember(client);
 		client.leaveChannel(*it);

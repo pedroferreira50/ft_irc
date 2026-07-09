@@ -25,7 +25,6 @@
 # define ERR_NOTEXTTOSEND		"412"
 # define ERR_NORECIPIENT		"411"
 # define ERR_NOSUCHNICK			"401"
-// adicionei os dois em baixo para erros expecificos, verificar em mode.cpp @cmd_mode.
 # define ERR_UNKNOWNMODE		"472"
 # define ERR_INVALIDMODEPARAM	"696"
 

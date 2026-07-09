@@ -56,10 +56,16 @@ void Server::_createSocket()
 		throw std::runtime_error("socket() failed");
 
 	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+	{
+		close(_fd);
 		throw std::runtime_error("setsockopt() failed");
+	}
 
 	if (fcntl(_fd, F_SETFL, O_NONBLOCK) < 0)
+	{
+		close(_fd);
 		throw std::runtime_error("fcntl() failed");
+	}
 
 	std::memset(&addr, 0, sizeof(addr));
 	addr.sin_family      = AF_INET;
@@ -67,10 +73,16 @@ void Server::_createSocket()
 	addr.sin_port        = htons(_port);
 
 	if (bind(_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0)
+	{
+		close(_fd);
 		throw std::runtime_error("bind() failed");
+	}
 
 	if (listen(_fd, SOMAXCONN) < 0)
+	{
+		close(_fd);
 		throw std::runtime_error("listen() failed");
+	}
 
 	pfd.fd      = _fd;
 	pfd.events  = POLLIN;
@@ -155,7 +167,6 @@ void Server::_acceptClient()
 	int                clientFd;
 	struct pollfd      pfd;
 
-	/*criaçao de socket para o client*/
 	addrlen  = sizeof(addr);
 	clientFd = accept(_fd, (struct sockaddr*)&addr, &addrlen);
 	if (clientFd < 0)
@@ -163,14 +174,13 @@ void Server::_acceptClient()
 		std::cerr << "accept() failed" << std::endl;
 		return;
 	}
-	/*atribuiçao de "qualidades" ao client*/
 	if (fcntl(clientFd, F_SETFL, O_NONBLOCK) < 0)
 	{
 		std::cerr << "fcntl() on client failed" << std::endl;
 		close(clientFd);
 		return;
 	}
-	/*criaçao do novo client*/
+
 	pfd.fd      = clientFd;
 	pfd.events  = POLLIN;
 	pfd.revents = 0;
@@ -179,7 +189,6 @@ void Server::_acceptClient()
 
 	std::cout << "[+] Client connected: fd=" << clientFd
 	          << " ip=" << inet_ntoa(addr.sin_addr) << std::endl;
-	/* mensagem de instrucoes */
 	std::string instructions = 
 	    ":" + _serverName + " NOTICE Auth :*** To get started, please set PASS, USER and NICK.\r\n"
 	    ":" + _serverName + " NOTICE Auth :*** Use 'PASS <ServerPass>' \r\n"
@@ -262,7 +271,6 @@ bool Server::_writeClient(int fd)
 
 void Server::_removeClient(int fd)
 {
-	/* @QUESTION: porque "EOF from client" ?*/
 	std::string quitMsg = ":" + _clients[fd]->getPrefix() + " QUIT :EOF from client\r\n";
 	std::set<std::string> channels = _clients[fd]->getChannelList();
 	for (std::set<std::string>::iterator it = channels.begin(); it != channels.end(); ++it)
@@ -360,7 +368,7 @@ void Server::sendMsg(Client& client, const std::string& msg)
 	client.getWriteBuf() += msg;
 	_setPollEvent(client.getFd(), POLLOUT, true);
 }
-//toLower esta ser usado para nicks serem o mesmo idependente se e maiusculo ou nao
+
 Client* Server::getClientByNick(const std::string& nick) const
 {
 	for (std::map<int, Client*>::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
